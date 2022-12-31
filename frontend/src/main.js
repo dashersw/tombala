@@ -8,10 +8,9 @@ import 'normalize.css'
 async function main() {
   const storeInstance = await store()
 
-createApp(App)
-  .use(storeInstance)
-  .use(router)
-  .mount('#app')
-
+  createApp(App)
+    .use(storeInstance)
+    .use(router)
+    .mount('#app')
 }
 main()

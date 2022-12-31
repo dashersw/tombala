@@ -6,12 +6,12 @@ axios.defaults.withCredentials = true
 
 const store = createStore({
   state: {
-    user: undefined
+    user: undefined,
   },
   mutations: {
     setUser(state, user) {
       state.user = user
-    }
+    },
   },
   actions: {
     async fetchUsers() {
@@ -28,7 +28,7 @@ const store = createStore({
       }
 
       commit('setUser', user)
-    }
+    },
   },
   modules: {},
 })
