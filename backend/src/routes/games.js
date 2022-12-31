@@ -88,9 +88,7 @@ router.post('/:id/status', ensureAdmin, async (req, res) => {
 
     await game.save()
 
-    if (game.active) {
-      socketServer().emit('new game', req.params.id)
-    }
+    socketServer().emit('new game', req.params.id)
 
     return res.send(game)
   } catch (e) {
