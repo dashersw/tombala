@@ -139,6 +139,11 @@ router.post('/:id/numbers', ensureAdmin, async (req, res) => {
 
     if (availableNumbers.length === 0) return res.sendStatus(400)
 
+    const drawnNumbersUsed = await GameCard.findOne({ game: game._id, markedNumbers: game.drawnNumbers[0] })
+
+    if (!drawnNumbersUsed)
+      game.drawnNumbers.shift()
+
     const randomAvailableNumber = availableNumbers[Math.floor(Math.random() * availableNumbers.length)]
 
     game.drawnNumbers.unshift(randomAvailableNumber)
