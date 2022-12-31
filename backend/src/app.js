@@ -10,6 +10,7 @@ const helmet = require('helmet')
 const { sanitize } = require('express-mongo-sanitize')
 
 const passport = require('passport')
+const cors = require('cors')
 const indexRouter = require('./routes/index')
 const usersRouter = require('./routes/users')
 const authRouter = require('./routes/auth')
@@ -19,6 +20,12 @@ require('./database-connection')
 
 const app = express()
 app.use(helmet())
+app.use(
+  cors({
+    origin: true,
+    credentials: true,
+  })
+)
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'))
