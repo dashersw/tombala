@@ -2,7 +2,10 @@ import { createStore } from 'vuex'
 import axios from 'axios'
 import io from 'socket.io-client'
 
-const socket = io(process.env.VUE_APP_BASE_PATH)
+const socket = io(process.env.VUE_APP_BASE_PATH, {
+  withCredentials: true,
+})
+
 axios.defaults.baseURL = process.env.VUE_APP_BASE_PATH
 axios.defaults.withCredentials = true
 

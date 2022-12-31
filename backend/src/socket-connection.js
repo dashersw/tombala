@@ -5,7 +5,12 @@ let socketServer = null
 module.exports = (app, server) => {
   if (socketServer) return socketServer
 
-  socketServer = io(server)
+  socketServer = io(server, {
+    cors: {
+      origin: 'https://tombala.gg',
+      methods: ['GET', 'POST'],
+    },
+  })
 
   socketServer.on('connection', socket => {
     socket.on('join-room', eventId => {
