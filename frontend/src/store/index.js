@@ -27,6 +27,7 @@ export const store = createStore({
       socket.on('new draw', fetchGames)
       socket.on('new user action', fetchGames)
       socket.on('new card', fetchGames)
+      socket.on('new game', fetchGames)
 
       await store.dispatch('fetchSession')
     },
