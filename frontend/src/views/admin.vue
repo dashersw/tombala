@@ -58,7 +58,7 @@ export default {
               h3 Cards:
               .row
                 .col(v-for="card in game.cards").mb-3
-                  p {{ card.user.email }}
+                  p {{ card.user.name }} ({{ card.user.email }})
                   game-card(:card="card")
 
           .row(v-if="game.active")
