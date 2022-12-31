@@ -60,7 +60,7 @@ router.get('/login/federated/google', passport.authenticate('google', { failWith
 router.get(
   '/google/redirect',
   passport.authenticate('google', {
-    successReturnToOrRedirect: '/',
+    successReturnToOrRedirect: 'https://tombala.gg',
     failureRedirect: 'https://tombala.gg',
   })
 )
