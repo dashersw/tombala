@@ -4,12 +4,20 @@ const path = require('path')
 const cookieParser = require('cookie-parser')
 const logger = require('morgan')
 
+const session = require('express-session')
+const MongoStore = require('connect-mongo')
+const helmet = require('helmet')
+const { sanitize } = require('express-mongo-sanitize')
+
+const passport = require('passport')
 const indexRouter = require('./routes/index')
 const usersRouter = require('./routes/users')
+const authRouter = require('./routes/auth')
 
 require('./database-connection')
 
 const app = express()
+app.use(helmet())
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'))
@@ -21,7 +29,30 @@ app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
 
+app.all('*', (req, res, next) => {
+  req.body = sanitize(req.body)
+  req.headers = sanitize(req.headers)
+  req.params = sanitize(req.params)
+
+  next()
+})
+
+app.use(
+  session({
+    secret: 'tombala session secret',
+    store: new MongoStore({
+      mongoUrl: process.env.MONGODB_CONNECTION_STRING,
+      stringify: false,
+    }),
+    resave: false,
+    saveUninitialized: false,
+  })
+)
+
+app.use(passport.authenticate('session'))
+
 app.use('/', indexRouter)
+app.use('/auth', authRouter)
 app.use('/users', usersRouter)
 
 // catch 404 and forward to error handler

@@ -20,4 +20,5 @@ export default {
 <template lang="pug">
 .home
   hello-world(msg="Welcome to your stack.")
+  a(href="/api/auth/login/federated/google") Login with Google
 </template>

@@ -19,13 +19,21 @@
     ]
   },
   "dependencies": {
+    "connect-mongo": "^4.6.0",
     "cookie-parser": "~1.4.4",
+    "cors": "^2.8.5",
     "debug": "~2.6.9",
     "express": "~4.16.1",
+    "express-mongo-sanitize": "^2.2.0",
+    "express-session": "^1.17.3",
+    "helmet": "^6.0.1",
     "http-errors": "~1.6.3",
+    "mongodb": "^4.13.0",
     "mongoose": "^5.10.2",
     "mongoose-autopopulate": "^0.12.2",
     "morgan": "~1.9.1",
+    "passport": "^0.6.0",
+    "passport-google-oidc": "^0.1.0",
     "pug": "2.0.0-beta11"
   },
   "devDependencies": {

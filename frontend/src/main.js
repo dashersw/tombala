@@ -5,7 +5,13 @@ import router from './router'
 import store from './store'
 import 'normalize.css'
 
+async function main() {
+  const storeInstance = await store()
+
 createApp(App)
-  .use(store)
+  .use(storeInstance)
   .use(router)
   .mount('#app')
+
+}
+main()
