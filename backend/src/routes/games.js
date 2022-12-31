@@ -36,7 +36,9 @@ router.get('/', ensureSession, async (req, res) => {
       })
     } else {
       games.forEach(game => {
-        game.cards = cards.filter(c => c.game._id.toString() == game._id.toString())
+        game.cards = cards
+          .filter(c => c.game._id.toString() == game._id.toString())
+          .sort((a, b) => b.markedNumbers.length - a.markedNumbers.length)
       })
     }
 
