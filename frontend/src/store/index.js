@@ -1,21 +1,46 @@
 import { createStore } from 'vuex'
 import axios from 'axios'
+import io from 'socket.io-client'
 
+const socket = io(process.env.VUE_APP_BASE_PATH)
 axios.defaults.baseURL = process.env.VUE_APP_BASE_PATH
 axios.defaults.withCredentials = true
 
-const store = createStore({
+export const store = createStore({
   state: {
     user: undefined,
+    games: [],
   },
   mutations: {
     setUser(state, user) {
       state.user = user
     },
+    setGames(state, games) {
+      state.games = games
+    },
   },
   actions: {
-    async fetchUsers() {
-      return (await axios.get('/api/users')).data
+    async init({ dispatch }) {
+      const fetchGames = () => dispatch('fetchGames')
+
+      socket.on('new participant', fetchGames)
+      socket.on('new draw', fetchGames)
+      socket.on('new user action', fetchGames)
+      socket.on('new card', fetchGames)
+
+      await store.dispatch('fetchSession')
+    },
+
+    async fetchGames({ commit }) {
+      const games = (await axios.get('/api/games')).data
+
+      commit('setGames', games)
+    },
+
+    async createGame(store, game) {
+      await axios.post('/api/games', game)
+
+      await this.dispatch('fetchGames')
     },
 
     async fetchSession({ commit }) {
@@ -23,18 +48,61 @@ const store = createStore({
 
       try {
         user = (await axios.get('/api/auth/me')).data
+
+        if (user.isAdmin) socket.emit('join-room', 'admin')
       } catch (e) {
         console.log(e)
       }
 
       commit('setUser', user)
     },
+
+    async changeGameStatus(store, { id, status }) {
+      await axios.post(`/api/games/${id}/status`, { status })
+    },
+
+    async startGame(store, id) {
+      await this.dispatch('changeGameStatus', { id, status: 'start' })
+
+      await this.dispatch('fetchGames')
+    },
+
+    async stopGame(store, id) {
+      await this.dispatch('changeGameStatus', { id, status: 'stop' })
+
+      await this.dispatch('fetchGames')
+    },
+
+    async drawNumber(store, id) {
+      await axios.post(`/api/games/${id}/numbers`)
+
+      await this.dispatch('fetchGames')
+    },
+
+    async joinGame(store, id) {
+      await axios.post(`/api/games/${id}/participants`)
+
+      await this.dispatch('fetchGames')
+      await this.dispatch('fetchSession')
+    },
+
+    async markNumber(store, { gameId, cardId, number }) {
+      await axios.put(`/api/games/${gameId}/cards/${cardId}/numbers/${number}?mark=true`)
+
+      await this.dispatch('fetchGames')
+    },
+
+    async requestANewCard(store, card) {
+      await axios.put(`/api/games/${card.game}/cards/${card._id}`)
+
+      await this.dispatch('fetchGames')
+    },
   },
   modules: {},
 })
 
 export default async function main() {
-  await store.dispatch('fetchSession')
+  await store.dispatch('init')
 
   return store
 }

@@ -1,11 +1,23 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/home.vue'
 
+import { store } from '../store'
+
 const routes = [
   {
     path: '/',
     name: 'Home',
     component: Home,
+  },
+  {
+    path: '/admin',
+    name: 'Admin',
+    component: () => import(/* webpackChunkName: "admin" */ '../views/admin.vue'),
+    beforeEnter: (to, from, next) => {
+      if (store.state.user.isAdmin) return next()
+
+      next({})
+    },
   },
   {
     path: '/about',

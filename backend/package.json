@@ -34,7 +34,8 @@
     "morgan": "~1.9.1",
     "passport": "^0.6.0",
     "passport-google-oidc": "^0.1.0",
-    "pug": "2.0.0-beta11"
+    "pug": "2.0.0-beta11",
+    "socket.io": "^4.5.4"
   },
   "devDependencies": {
     "eslint": "^7.8.1",

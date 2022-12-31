@@ -13,6 +13,7 @@ const passport = require('passport')
 const indexRouter = require('./routes/index')
 const usersRouter = require('./routes/users')
 const authRouter = require('./routes/auth')
+const gamesRouter = require('./routes/games')
 
 require('./database-connection')
 
@@ -54,6 +55,7 @@ app.use(passport.authenticate('session'))
 app.use('/', indexRouter)
 app.use('/auth', authRouter)
 app.use('/users', usersRouter)
+app.use('/games', gamesRouter)
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
@@ -75,6 +77,10 @@ app.use((err, req, res, next) => {
   res.status(error.status)
 
   res.send(error)
+})
+
+process.on('unhandledRejection', (reason, p) => {
+  console.error('Unhandled Rejection at: Promise', p, 'reason:', reason)
 })
 
 module.exports = app

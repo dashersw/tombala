@@ -2,12 +2,7 @@ const express = require('express')
 const passport = require('passport')
 const GoogleStrategy = require('passport-google-oidc')
 const UserModel = require('../models/user')
-
-function ensureSession(req, res, next) {
-  if (req.isAuthenticated && req.isAuthenticated()) return next()
-
-  return res.send(401, 'Unauthorized')
-}
+const { ensureSession } = require('./middleware')
 
 passport.use(
   new GoogleStrategy(

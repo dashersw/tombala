@@ -23,6 +23,8 @@ app.set('port', port)
 
 const server = http.createServer(app)
 
+require('../src/socket-connection')(app, server)
+
 /**
  * Listen on provided port, on all network interfaces.
  */
