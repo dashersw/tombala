@@ -40,7 +40,7 @@ export default {
   h1 Welcome to Nimble Tombala.
   div(v-if="!user")
     p Log in to join the game 🚀
-    a.btn.btn-primary(:href="`${basePath}/api/auth/login/federated/google`") Log in with Google
+    a.btn.btn-primary(:href="`${basePath}/auth/login/federated/google`") Log in with Google
   div(v-else)
     p Hello {{ user.name }}! 👋
     p(v-if="games.length == 0") There are no active games right now 🙈

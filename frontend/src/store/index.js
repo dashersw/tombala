@@ -33,13 +33,13 @@ export const store = createStore({
     },
 
     async fetchGames({ commit }) {
-      const games = (await axios.get('/api/games')).data
+      const games = (await axios.get('/games')).data
 
       commit('setGames', games)
     },
 
     async createGame(store, game) {
-      await axios.post('/api/games', game)
+      await axios.post('/games', game)
 
       await this.dispatch('fetchGames')
     },
@@ -48,7 +48,7 @@ export const store = createStore({
       let user = null
 
       try {
-        user = (await axios.get('/api/auth/me')).data
+        user = (await axios.get('/auth/me')).data
 
         if (user.isAdmin) socket.emit('join-room', 'admin')
       } catch (e) {
@@ -59,7 +59,7 @@ export const store = createStore({
     },
 
     async changeGameStatus(store, { id, status }) {
-      await axios.post(`/api/games/${id}/status`, { status })
+      await axios.post(`/games/${id}/status`, { status })
     },
 
     async startGame(store, id) {
@@ -75,26 +75,26 @@ export const store = createStore({
     },
 
     async drawNumber(store, id) {
-      await axios.post(`/api/games/${id}/numbers`)
+      await axios.post(`/games/${id}/numbers`)
 
       await this.dispatch('fetchGames')
     },
 
     async joinGame(store, id) {
-      await axios.post(`/api/games/${id}/participants`)
+      await axios.post(`/games/${id}/participants`)
 
       await this.dispatch('fetchGames')
       await this.dispatch('fetchSession')
     },
 
     async markNumber(store, { gameId, cardId, number }) {
-      await axios.put(`/api/games/${gameId}/cards/${cardId}/numbers/${number}?mark=true`)
+      await axios.put(`/games/${gameId}/cards/${cardId}/numbers/${number}?mark=true`)
 
       await this.dispatch('fetchGames')
     },
 
     async requestANewCard(store, card) {
-      await axios.put(`/api/games/${card.game}/cards/${card._id}`)
+      await axios.put(`/games/${card.game}/cards/${card._id}`)
 
       await this.dispatch('fetchGames')
     },

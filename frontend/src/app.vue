@@ -28,7 +28,7 @@ export default {
       li.nav-item(v-if="user?.isAdmin")
         router-link.nav-link(to="/admin") Admin
       li.nav-item(v-if="user")
-        a.nav-link(:href="`${basePath}/api/auth/logout`") Logout
+        a.nav-link(:href="`${basePath}/auth/logout`") Logout
 
   router-view
 </template>
