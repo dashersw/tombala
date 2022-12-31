@@ -9,6 +9,7 @@ module.exports = (app, server) => {
     cors: {
       origin: 'https://tombala.gg',
       methods: ['GET', 'POST'],
+      credentials: true,
     },
   })
 
