@@ -29,14 +29,24 @@ export default {
   padding: 1px;
   border: 1px solid black;
   display: inline-block;
+  overflow: scroll;
+  max-width: 90vw;
+
+  @media screen and (max-width: 480px) {
+    font-size: 10px;
+  }
+
+  @media screen and (max-width: 360px) {
+    font-size: 8px;
+  }
 }
 
 .game-card {
   display: inline-block;
   border: 1px solid black;
-  margin: 0.5rem;
-  width: 30rem;
-  height: 9rem;
+  margin: 0.3em;
+  width: 30em;
+  height: 9em;
   box-sizing: content-box;
 }
 
@@ -44,20 +54,20 @@ export default {
   position: relative;
   background: white;
   display: inline-block;
-  height: 3rem;
-  width: 3rem;
-  line-height: 3rem;
+  height: 3em;
+  width: 3em;
+  line-height: 3em;
   text-align: center;
   font-weight: 700;
   cursor: pointer;
 }
 
 .block:not(:last-child) {
-  margin-right: 3rem;
+  margin-right: 3em;
 }
 
 .card-row:nth-child(2) {
-  margin-left: 3rem;
+  margin-left: 3em;
 }
 
 .marked-bg {

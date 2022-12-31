@@ -38,7 +38,7 @@ export default {
       h1 Games
       p(v-if="games.length === 0") No games
       ul(v-else)
-        li(v-for="game in games")
+        li(v-for="game in games").mb-5
           .row
             h2 {{ game.name }} game
             .col-2
@@ -46,7 +46,7 @@ export default {
               button.btn.btn-primary(v-if="!game.active" @click="startGame(game._id)") Start
             .col-3(v-if="game.active")
               h3 Last drawn number:
-                button.btn.btn-success.m-1.btn-lg {{  game.drawnNumbers[0] }}
+                button.btn.btn-success.m-1.btn-lg {{ game.drawnNumbers[0] || '—' }}
             .col(v-if="game.active")
               h3 Drawn numbers ({{ game.drawnNumbers.length }}):
               p(v-if="game.drawnNumbers.length === 0") No numbers drawn

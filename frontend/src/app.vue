@@ -19,13 +19,16 @@ export default {
 <template lang="pug">
 #app.container
   header.d-flex.flex-wrap.justify-content-center.py-3.mb-4.border-bottom
-    a.d-flex.align-items-center.mb-3.mb-md-0.me-md-auto.text-dark.text-decoration-none(href='/')
+    a.d-flex.align-items-center.mb-3.mb-md-0.me-auto.text-dark.text-decoration-none(href='/')
       span.fs-4 Nimble Tombala
 
-  .container(v-if="!user")
-    h1 Welcome to Nimble Tombala.
-    p Log in to join the game 🚀
-    a.btn.btn-primary(:href="`${basePath}/api/auth/login/federated/google`") Log in with Google
+    ul.nav.nav-pills
+      li.nav-item
+        router-link.nav-link.active(to="/") Home
+      li.nav-item(v-if="user?.isAdmin")
+        router-link.nav-link(to="/admin") Admin
+      li.nav-item(v-if="user")
+        a.nav-link(:href="`${basePath}/api/auth/logout`") Logout
 
   router-view
 </template>
