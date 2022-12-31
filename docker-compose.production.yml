@@ -1,0 +1,10 @@
+version: '3'
+services:
+  frontend:
+    build:
+      dockerfile: ./Dockerfile
+    environment:
+      - PORT=8080
+  backend:
+    build:
+      dockerfile: ./Dockerfile

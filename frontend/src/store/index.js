@@ -1,6 +1,9 @@
 import { createStore } from 'vuex'
 import axios from 'axios'
 
+axios.defaults.baseURL = process.env.VUE_APP_BASE_PATH
+axios.defaults.withCredentials = true
+
 const store = createStore({
   state: {
     user: undefined
