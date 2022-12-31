@@ -42,6 +42,12 @@ router.get('/', ensureSession, async (req, res) => {
       })
     }
 
+    games.sort((a, b) => {
+      if (a.active && !b.active) return -1
+
+      return b.drawnNumbers.length - a.drawnNumbers.length
+    })
+
     res.send(games)
   } catch (e) {
     console.error(e)
