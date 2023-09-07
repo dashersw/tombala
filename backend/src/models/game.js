@@ -25,9 +25,17 @@ const gameSchema = new mongoose.Schema(
         type: Number,
       },
     ],
+    admin: {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: 'User',
+    },
   },
   { timestamps: true }
 )
+
+gameSchema.static('isBelongTo', async function (userId) {
+  return this.admin == userId
+})
 
 gameSchema.plugin(autopopulate)
 

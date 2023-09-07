@@ -25,7 +25,7 @@ export default {
     ul.nav.nav-pills
       li.nav-item
         router-link.nav-link.active(to="/") Home
-      li.nav-item(v-if="user?.isAdmin")
+      li.nav-item(v-if="user")
         router-link.nav-link(to="/admin") Admin
       li.nav-item(v-if="user")
         a.nav-link(:href="`${basePath}/auth/logout`") Logout

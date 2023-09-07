@@ -53,7 +53,6 @@ export const store = createStore({
       try {
         user = (await axios.get('/auth/me')).data
 
-        if (user.isAdmin) socket.emit('join-room', 'admin')
       } catch (e) {
         console.log(e)
       }
@@ -101,6 +100,26 @@ export const store = createStore({
 
       await this.dispatch('fetchGames')
     },
+  },
+  getters: {
+    homeGames: state => {
+      const filteredGame = state.games.filter(game => {
+        return game.active == true && game.admin != state.user._id
+      })
+
+      return filteredGame
+    },
+    adminGames: state => {
+      const filteredGame = state.games.filter(game => {
+        return game.admin == state.user._id
+      })
+
+      filteredGame.forEach(game => {
+        socket.emit('join-room', `admin-${game._id}`)
+      })
+
+      return filteredGame
+    }
   },
   modules: {},
 })

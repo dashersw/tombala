@@ -4,7 +4,7 @@ const Game = require('../models/game')
 const GameCard = require('../models/game-card')
 const socketServer = require('../socket-connection')
 
-const { ensureSession, ensureAdmin } = require('./middleware')
+const { ensureSession } = require('./middleware')
 
 const router = express.Router()
 
@@ -12,35 +12,25 @@ router.get('/', ensureSession, async (req, res) => {
   try {
     let query = {}
 
-    if (!req.user.isAdmin) query = { active: true }
-
     let games = await Game.find(query)
 
     const cards = await GameCard.find({ game: { $in: games.map(g => g._id) } }).populate('user')
 
     games = games.map(g => g.toJSON())
 
-    if (!req.user.isAdmin) {
-      games.forEach(game => {
-        game.self = game.participants.find(p => p._id.toString() == req.user._id.toString())
+    games.forEach(game => {
+      game.self = game.participants.find(p => p._id.toString() == req.user._id.toString())
 
-        game.ownCard = cards.find(
-          c => c.game.toString() == game._id.toString() && c.user._id.toString() == req.user._id.toString()
-        )
+      game.ownCard = cards.find(
+        c => c.game.toString() == game._id.toString() && c.user._id.toString() == req.user._id.toString()
+      )
 
-        if (game.drawnNumbers.length > 1) game.drawnNumbers.length = 1
+      if (game.drawnNumbers.length > 1) game.drawnNumbers.length = 1
 
-        game.participants = game.participants.map(p => {
-          return {}
-        })
-      })
-    } else {
-      games.forEach(game => {
-        game.cards = cards
-          .filter(c => c.game._id.toString() == game._id.toString())
-          .sort((a, b) => b.markedNumbers.length - a.markedNumbers.length)
-      })
-    }
+      game.cards = cards
+        .filter(c => c.game._id.toString() == game._id.toString())
+        .sort((a, b) => b.markedNumbers.length - a.markedNumbers.length)
+    })
 
     games.sort((a, b) => {
       if (a.active && !b.active) return -1
@@ -63,7 +53,7 @@ router.get('/:id', ensureSession, async (req, res) => {
 
     game = game.toJSON()
 
-    if (!req.user.isAdmin) {
+    if (req.user && game.isBelongTo(req.user._id)) {
       game.self = game.participants.find(p => p._id.toString() == req.user._id.toString())
 
       game.ownCard = game.cards.find(c => c.user._id.toString() == req.user._id.toString())
@@ -84,7 +74,7 @@ router.get('/:id', ensureSession, async (req, res) => {
   }
 })
 
-router.post('/:id/status', ensureAdmin, async (req, res) => {
+router.post('/:id/status', async (req, res) => {
   try {
     const game = await Game.findById(req.params.id)
 
@@ -118,7 +108,7 @@ router.post('/:id/participants', ensureSession, async (req, res) => {
       user: req.user._id,
     })
 
-    socketServer().to('admin').emit('new participant', req.params.id)
+    socketServer().to(`admin-${game._id}`).emit('new participant', req.params.id)
 
     return res.send(game)
   } catch (e) {
@@ -127,7 +117,7 @@ router.post('/:id/participants', ensureSession, async (req, res) => {
   }
 })
 
-router.post('/:id/numbers', ensureAdmin, async (req, res) => {
+router.post('/:id/numbers', async (req, res) => {
   try {
     const game = await Game.findById(req.params.id)
 
@@ -181,7 +171,7 @@ router.put('/:gameId/cards/:cardId', ensureSession, async (req, res) => {
 
     res.send(card)
 
-    socketServer().to('admin').emit('new card', req.params.gameId)
+    socketServer().to(`admin-${req.params.gameId}`).emit('new card', req.params.gameId)
   } catch (e) {
     console.error(e)
     res.sendStatus(500)
@@ -211,7 +201,7 @@ router.put('/:gameId/cards/:cardId/numbers/:number', ensureSession, async (req, 
       { new: true }
     )
 
-    socketServer().to('admin').emit('new user action', req.params.id)
+    socketServer().to(`admin-${req.params.gameId}`).emit('new user action', req.params.id)
 
     if (!card) return res.sendStatus(404)
 
@@ -222,9 +212,12 @@ router.put('/:gameId/cards/:cardId/numbers/:number', ensureSession, async (req, 
   }
 })
 
-router.post('/', ensureAdmin, async (req, res) => {
+router.post('/', async (req, res) => {
   try {
-    const game = await Game.create(req.body)
+    const game = await Game.create({
+      ...req.body,
+      admin: req.user._id,
+    })
 
     res.send(game)
   } catch (e) {

@@ -1,5 +1,5 @@
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import GameCard from '@/components/game-card.vue'
 
 export default {
@@ -26,7 +26,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(['games']),
+    ...mapGetters(['adminGames']),
   },
 }
 </script>
@@ -36,9 +36,9 @@ export default {
   .row.games.g-6
     .col-12
       h1 Games
-      p(v-if="games.length === 0") No games
+      p(v-if="adminGames.length === 0") No games
       ul(v-else)
-        li(v-for="game in games").mb-5
+        li(v-for="game in adminGames").mb-5
           .row
             h2 {{ game.name }} game
             .col-2
