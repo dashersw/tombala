@@ -1,5 +1,5 @@
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapState, mapGetters } from 'vuex'
 import GameCard from '../components/game-card.vue'
 
 const { VUE_APP_BASE_PATH } = process.env
@@ -30,7 +30,8 @@ export default {
     },
   },
   computed: {
-    ...mapState(['games', 'user']),
+    ...mapState(['user']),
+    ...mapGetters(['homeGames']),
   },
 }
 </script>
@@ -43,11 +44,11 @@ export default {
     a.btn.btn-primary(:href="`${basePath}/auth/login/federated/google`") Log in with Google
   div(v-else)
     p Hello {{ user.name }}! 👋
-    p(v-if="games.length == 0") There are no active games right now 🙈
-    p(v-else-if="games.length == 1") There is {{ games.length }} active game right now 🚀
-    p(v-else) There are {{ games.length }} active games right now 🚀
+    p(v-if="homeGames.length == 0") There are no active games right now 🙈
+    p(v-else-if="homeGames.length == 1") There is {{ homeGames.length }} active game right now 🚀
+    p(v-else) There are {{ homeGames.length }} active games right now 🚀
   .row
-    .col-xl-6.col-xs-12.mb-5(v-for="game in games")
+    .col-xl-6.col-xs-12.mb-5(v-for="game in homeGames")
       h2 {{ game.name }}
       .container(v-if="!game.self")
         p You are not participating in this game

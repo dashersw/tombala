@@ -14,7 +14,7 @@ const routes = [
     name: 'Admin',
     component: () => import(/* webpackChunkName: "admin" */ '../views/admin.vue'),
     beforeEnter: (to, from, next) => {
-      if (store.state.user.isAdmin) return next()
+      if (store.state.user) return next()
 
       next({})
     },

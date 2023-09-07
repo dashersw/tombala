@@ -1,13 +1,7 @@
 function ensureSession(req, res, next) {
   if (req.isAuthenticated && req.isAuthenticated()) return next()
 
-  return res.send(401, 'Unauthorized')
+  return res.status(401).send('Unauthorized')
 }
 
-function ensureAdmin(req, res, next) {
-  if (req.isAuthenticated && req.isAuthenticated() && req.user.isAdmin) return next()
-
-  return res.send(401, 'Unauthorized')
-}
-
-module.exports = { ensureSession, ensureAdmin }
+module.exports = { ensureSession }
